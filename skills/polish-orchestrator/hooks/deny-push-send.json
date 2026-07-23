@@ -1,0 +1,16 @@
+{
+  "_comment": "polish-orchestrator — hard guardrails as harness-enforced denies. Bash: block `git push` (the Polisher commits locally only; you review and push yourself) AND outbound send/post commands (gh pr/issue create, git send-email) — polish never auto-sends. Exit 2 blocks the call. Wire this into your project's .claude/settings.json PreToolUse hooks. Windows-correct: node -e one-liners.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{const i=JSON.parse(s);const c=(i.tool_input&&i.tool_input.command)||'';if(/git\\s+push\\b|git\\s+remote\\s+\\S+\\s+\\S*push|\\bpush\\s+--/.test(c)){console.error('[polish deny] git push is forbidden — commit locally only; you review and push yourself.');process.exit(2);}if(/\\b(gh\\s+pr\\s+create|gh\\s+issue\\s+create|git\\s+send-email)\\b/.test(c)){console.error('[polish deny] outbound publish/send is forbidden — polish drafts only, never auto-sends.');process.exit(2);}}catch(e){}process.exit(0);})\""
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "_comment": "polish-orchestrator — write-scoping as a HARNESS-ENFORCED guarantee (not honor-system prose). PreToolUse on Write/Edit/NotebookEdit pipes the tool-call JSON to scripts/scope_guard.mjs; exit 2 BLOCKS an out-of-scope write. A specialist may write ONLY its own polish/<mode>-report.{md,json} (+ project source, except market/value which are recommendations-only); never another worker's report, never polish-progress/report/log or cso-exclusions. The dispatching mode is read from the POLISH_MODE env var (set per agent at dispatch); when unset the global denies still hold. REPLACE THE COMMAND PATH BELOW with the absolute path where you installed this skill (settings files do not resolve skill variables), then wire it into your project's .claude/settings.json.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"<ABSOLUTE-PATH-TO>/polish-orchestrator/scripts/scope_guard.mjs\""
+          }
+        ]
+      }
+    ]
+  }
+}
